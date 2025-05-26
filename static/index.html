@@ -382,7 +382,7 @@
     <div>M</div>
     <div>Z</div>
     <div>2</div>
-    <div>4</div>
+    <div>5</div>
   </div>
 
   <script>
@@ -393,52 +393,65 @@
     const resultsBox = document.getElementById('resultsBox');
     const resultsList = document.getElementById('resultsList');
     const loader = document.getElementById('loader');
-
+  
+    const showError = (message) => {
+      resultsList.innerHTML = `<div class="result-card" style="color:#ff4444;">${message}</div>`;
+      resultsBox.style.display = 'block';
+    };
+  
     uploadForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
+  
       const file = imageInput.files[0];
       if (!file) return alert("Please select an image!");
-
+  
       const reader = new FileReader();
       reader.onload = () => {
         previewImage.src = reader.result;
         previewBox.style.display = 'block';
       };
       reader.readAsDataURL(file);
-
+  
       const formData = new FormData();
       formData.append("image", file);
-
+  
       loader.style.display = 'block';
       resultsBox.style.display = 'none';
       resultsList.innerHTML = "";
-
+  
       try {
         const response = await fetch("/upload", {
           method: "POST",
           body: formData
         });
-
+  
+        if (!response.ok) {
+          throw new Error("Server error");
+        }
+  
         const data = await response.json();
         const results = data.results || [];
-
-        results.forEach(url => {
-          const card = document.createElement('div');
-          card.className = "result-card";
-          card.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
-          resultsList.appendChild(card);
-        });
-
-        resultsBox.style.display = results.length > 0 ? 'block' : 'none';
-
+  
+        if (results.length === 0) {
+          showError("No similar images found.");
+        } else {
+          results.forEach(url => {
+            const card = document.createElement('div');
+            card.className = "result-card";
+            card.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+            resultsList.appendChild(card);
+          });
+          resultsBox.style.display = 'block';
+        }
+  
       } catch (error) {
         console.error("Error fetching results:", error);
-        alert("Something went wrong! Is the backend running?");
+        showError("Server error. Please try again later.");
       } finally {
         loader.style.display = 'none';
       }
     });
   </script>
+  
 </body>
 </html>
