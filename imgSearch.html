@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bhatka Hua Devta</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'VT323', monospace;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #000000;
+      color: #00ff00;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+      position: relative;
+    }
+
+    .status-bar {
+      width: 100%;
+      background: #1a1a1a;
+      color: #ffaa00;
+      padding: 5px;
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #00ffff;
+      text-transform: uppercase;
+    }
+
+    .status-bar span {
+      margin: 0 10px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 0 5px #00ff00;
+      border-bottom: 2px solid #ff00ff;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .description {
+      width: 90%;
+      max-width: 600px;
+      background: #1a1a1a;
+      border: 2px solid #ffaa00;
+      padding: 10px;
+      margin: 10px 0;
+      color: #00ffff;
+      font-size: 1.2rem;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      border: 2px dashed #00ffff;
+      background: #1a1a1a;
+      padding: 15px;
+      box-shadow: 0 0 10px #00ffff;
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    .terrain-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 2px solid #ffaa00;
+      background: #000000;
+    }
+
+    .terrain-options-header {
+      width: 100%;
+      color: #ffaa00;
+      font-size: 1.2rem;
+      text-align: center;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #00ff00;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .terrain-option {
+      background: #333333;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 5px 10px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .terrain-option:hover {
+      background: #00ff00;
+      color: #000000;
+    }
+
+    .upload-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      background: #333333;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.2rem;
+    }
+
+    button {
+      background: #ff00ff;
+      color: #000000;
+      border: 2px solid #ff00ff;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: #000000;
+      border-color: #00ff00;
+    }
+
+    .preview {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .glass-image {
+      width: 100%;
+      max-width: 150px;
+      border: 2px solid #00ffff;
+      background: #000000;
+      margin: auto;
+      padding: 5px;
+    }
+
+    .results {
+      margin-top: 20px;
+    }
+
+    .result-card {
+      background: #333333;
+      border: 2px solid #ff00ff;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-card a {
+      color: #00ffff;
+      text-decoration: underline;
+      font-size: 1.2rem;
+      word-break: break-all;
+    }
+
+    .result-card a:hover {
+      color: #ff00ff;
+    }
+
+    .loader {
+      display: none;
+      text-align: left;
+      margin: 20px auto;
+      font-size: 1.2rem;
+      color: #00ff00;
+      text-transform: uppercase;
+      background: #000000;
+      padding: 10px;
+      border: 2px solid #ffaa00;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .loader-text {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .loader-text span {
+      display: none;
+      opacity: 0;
+      animation: blink 1s infinite;
+    }
+
+    .loader-text span:nth-child(1) {
+      display: block;
+      animation: fade 60s steps(1, end);
+    }
+
+    .loader-text span:nth-child(2) {
+      display: block;
+      animation: fade 60s steps(1, end) 10s;
+    }
+
+    .loader-text span:nth-child(3) {
+      display: block;
+      animation: fade 60s steps(1, end) 20s;
+    }
+
+    .loader-text span:nth-child(4) {
+      display: block;
+      animation: fade 60s steps(1, end) 30s;
+    }
+
+    .loader-text span:nth-child(5) {
+      display: block;
+      animation: fade 60s steps(1, end) 40s;
+    }
+
+    .loader-text span:nth-child(6) {
+      display: block;
+      animation: fade 60s steps(1, end) 50s;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #333333;
+      border: 2px solid #00ff00;
+      height: 20px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress {
+      width: 0;
+      height: 100%;
+      background: #00ff00;
+      animation: progress 60s linear forwards;
+    }
+
+    @keyframes fade {
+      0%, 16.66% { opacity: 1; }
+      16.67%, 100% { opacity: 0; }
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    @keyframes progress {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    .toolbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #1a1a1a;
+      border-top: 2px solid #00ffff;
+      display: flex;
+      justify-content: space-around;
+      padding: 5px 0;
+      color: #ffaa00;
+      font-size: 1.2rem;
+    }
+
+    .toolbar div {
+      padding: 5px 10px;
+      border: 2px solid #ffaa00;
+      background: #333333;
+      text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 500px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .description {
+        font-size: 1rem;
+      }
+
+      .container {
+        width: 95%;
+        padding: 10px;
+      }
+
+      input[type="file"], button {
+        font-size: 1rem;
+      }
+
+      .terrain-options-header {
+        font-size: 1rem;
+      }
+
+      .terrain-option {
+        font-size: 0.9rem;
+        padding: 3px 6px;
+      }
+
+      .loader {
+        font-size: 1rem;
+      }
+
+      .progress-bar {
+        height: 15px;
+      }
+
+      .toolbar {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="status-bar">
+    <span>SYS: ONLINE</span>
+    <span>MODE: SCAN</span>
+    <span>GEO: ACTIVE</span>
+  </div>
+  <h1>Bhatka Hua Devta</h1>
+  <div class="description">
+    SYS: BHATKA HUA DEVTA 1984: REVERSE PHOTO SEARCH MODULE [PROTOCOL: HTTP SEARCH]
+  </div>
+  <div class="container">
+    <div class="terrain-options">
+      <div class="terrain-options-header">INFO DB MODULES AVAILABLE FOR SEARCH</div>
+      <div class="terrain-option">PORTRAIT MODULE</div>
+      <div class="terrain-option">LANDSCAPE MODULE</div>
+      <div class="terrain-option">OBJECT MODULE</div>
+      <div class="terrain-option">PATTERN MODULE</div>
+      <div class="terrain-option">ARCHIVE MODULE</div>
+    </div>
+    <form id="uploadForm" class="upload-box">
+      <input type="file" id="imageInput" name="image" accept="image/*" required>
+      <button type="submit">Upload & Search</button>
+    </form>
+
+    <div class="loader" id="loader">
+      <div class="loader-text">
+        <span>INITIALIZING CORE MODULES...</span>
+        <span>CONNECTING TO GRID SERVERS...</span>
+        <span>SEARCHING INTERNET ARCHIVES...</span>
+        <span>PROGRESS: 50%</span>
+        <span>ANALYZING MATCHES...</span>
+        <span>FINALIZING SCAN...</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+    </div>
+
+    <div class="preview" id="previewBox" style="display: none;">
+      <h3>SCAN PREVIEW</h3>
+      <div class="glass-image">
+        <img id="previewImage" src="" alt="Uploaded Image" style="width: 100%;">
+      </div>
+    </div>
+
+    <div class="results" id="resultsBox" style="display: none;">
+      <h3>SCAN RESULTS</h3>
+      <div id="resultsList"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div>M</div>
+    <div>Z</div>
+    <div>2</div>
+    <div>5</div>
+  </div>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const imageInput = document.getElementById('imageInput');
+    const previewBox = document.getElementById('previewBox');
+    const previewImage = document.getElementById('previewImage');
+    const resultsBox = document.getElementById('resultsBox');
+    const resultsList = document.getElementById('resultsList');
+    const loader = document.getElementById('loader');
+  
+    const showError = (message) => {
+      resultsList.innerHTML = `<div class="result-card" style="color:#ff4444;">${message}</div>`;
+      resultsBox.style.display = 'block';
+    };
+  
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      const file = imageInput.files[0];
+      if (!file) return alert("Please select an image!");
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewImage.src = reader.result;
+        previewBox.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  
+      const formData = new FormData();
+      formData.append("image", file);
+  
+      loader.style.display = 'block';
+      resultsBox.style.display = 'none';
+      resultsList.innerHTML = "";
+  
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData
+        });
+  
+        if (!response.ok) {
+          throw new Error("Server error");
+        }
+  
+        const data = await response.json();
+        const results = data.results || [];
+  
+        if (results.length === 0) {
+          showError("No similar images found.");
+        } else {
+          results.forEach(url => {
+            const card = document.createElement('div');
+            card.className = "result-card";
+            card.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+            resultsList.appendChild(card);
+          });
+          resultsBox.style.display = 'block';
+        }
+  
+      } catch (error) {
+        console.error("Error fetching results:", error);
+        showError("We couldn’t find any similar images in our database. Please try again with a different one.");
+      } finally {
+        loader.style.display = 'none';
+      }
+    });
+  </script>
+  
+</body>
+</html>
